@@ -13,8 +13,10 @@ document.addEventListener("DOMContentLoaded", function() {
      //create li for ul
      var list = document.createElement('li');
      //enter name and votes of candidate inside li
-     list.innerText = 'Name '+ c[i].name + ',' + 'votes ' + c[i].votes;
-
+     list.innerText = 'Name '+ c[i].name + ',' + 'votes ';
+     var vote = document.createElement('p');
+     vote.innerText = c[i].votes;
+     list.append(vote);
      //make form
        var f = document.createElement('form');
        f.setAttribute('method', 'post');
@@ -25,6 +27,11 @@ document.addEventListener("DOMContentLoaded", function() {
          submitButton.setAttribute('value',"Submit");
 
         f.appendChild(submitButton);
+
+        var refresh = document.createElement("input"); //input element, Submit button
+         refresh.setAttribute('type',"submit");
+         refresh.setAttribute('value',"Refresh")
+        f.appendChild(refresh);
 
         var nameInput = document.createElement("input"); //input name, hidden element
          nameInput.setAttribute('type',"hidden");
@@ -37,61 +44,19 @@ document.addEventListener("DOMContentLoaded", function() {
      //add li to ul
      ul.appendChild(list);
 
+     refresh.addEventListener('click', function(e){
+       e.preventDefault();
+       var c = responseData.candidates;
+       var r_list = e.target.parentNode.parentNode;
+       var r_votes = r_list.getElementsByTagName('p');
+       var v_votes = parseInt(r_votes[0].innerText) + 1;
+       r_votes[0].innerText = v_votes
 
-
+              console.log('refreshed');
+            });
    } //closes the iteration above
 
-  //  Now that we can vote, add a "Refresh" button or link
-  // to the index.html file. Create a click event handler for
-  //  this button in election.js. When it's clicked, update
-  //  the vote counts of the various candidates. You'll have
-  // to update the existing <li> elements now instead of
-  // appending.
-
-     //create a button
-     var refresh = document.createElement('button');
-      refresh.setAttribute('href', 'file:///home/viktorija/Desktop/bitmaker/projects/bb-election-part-2/index.html')
-
-      //create text on the button
-     var t = document.createTextNode ('Refresh');
-
-     //select the refresh button
-     var r = document.querySelector('button');
-     r.appendChild(t);
-
-     r.addEventListener('click', function(e){
-       //prevent default when click button
-       e.preventDefault();
-
-       //When it's clicked, update
-       //  the vote counts of the various candidates. You'll have
-       // to update the existing <li> elements now instead of
-       // appending.
-
-
-       //collect all candidates
-       var c = responseData.candidates;
-         //iterate through candidates to  get current candidate
-        for (var i=0; i<c.length; i++) {
-           //increase votes by 1
-          c[i].votes +=1
-        };
-       //find all the list elements
-       var findLists = document.querySelectorAll('li');
-       //iterate through all the list elements & append the button to the current li
-         for (var i=0; i<findLists.length; i++){
-           findLists[i].appendChild(r);
-         };
-     }).done(function(){
-          console.log('refreshed');
-        });
-      
-    // })
-
-
-
-
-   var findForm = document.querySelectorAll('form');
+     var findForm = document.querySelectorAll('form');
    for (var i=0; i<findForm.length; i++){
      findForm[i].addEventListener('submit', function(e){
        e.preventDefault();
@@ -113,10 +78,6 @@ document.addEventListener("DOMContentLoaded", function() {
   }).fail(function(){
   console.log('Request failed.');
 });
-
-
-
-
 
 
 
